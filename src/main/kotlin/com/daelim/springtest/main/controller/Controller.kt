@@ -41,5 +41,21 @@ class Controller {
     ): ResponseEntity<TestDto> {
         val response = tests.firstOrNull{it.id == userId}
         return ResponseEntity.ok().body(response)
+
+    }
+    @DeleteMapping("/test/{id}")
+    fun deleteTestDto(
+        @PathVariable("id") userId: String
+    ): ResponseEntity<Unit> {
+        // 조건에 맞는 요소를 삭제하고 삭제 여부를 반환 (MutableList 기준)
+        val removed = tests.removeIf { it.id == userId }
+
+        return if (removed) {
+            // 삭제 성공 시 204 No Content
+            ResponseEntity.noContent().build()
+        } else {
+            // 삭제할 대상을 찾지 못한 경우 404 Not Found
+            ResponseEntity.notFound().build()
+        }
     }
 }
